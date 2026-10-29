@@ -1,8 +1,20 @@
-include <stdio.h>
+/*
+ * Blood Donation & Request Portal
+ *
+ * Data structures used:
+ *   1. Stack            - donation records          (donations[], donationTop)
+ *   2. Queue (FIFO)     - regular blood requests    (requests[], requestCount)
+ *   3. Linked list      - donor/receiver profiles   (profileHead, next)
+ *   4. Hash table       - search by blood group     (hashTable[], hnext)
+ *   5. Priority queue   - urgent blood requests     (urgentRequests[], sorted array)
+ *   6. Circular queue   - donation history log      (history[], historyFront, historyCount)
+ *   7. Binary search tree - blood bank branches     (branchRoot, left, right)
+ */
+
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <errno.h>
 #include <limits.h>
 
 #define MAX 50
@@ -96,19 +108,20 @@ int readInt(const char *prompt)
 {
 	char buffer[100];
 	char *end;
-	long value;
+	long long value;
 
 	while (1) {
 		readLine(prompt, buffer, sizeof(buffer));
 
-		errno = 0;
-		value = strtol(buffer, &end, 10);
+		/* long long is at least 64 bits, so any number too big for int
+		   is still caught by the INT_MIN / INT_MAX check below */
+		value = strtoll(buffer, &end, 10);
 
 		/* allow trailing spaces or tabs after the number */
 		while (*end == ' ' || *end == '\t')
 			end++;
 
-		if (end == buffer || *end != '\0' || errno == ERANGE ||
+		if (end == buffer || *end != '\0' ||
 		        value < INT_MIN || value > INT_MAX) {
 			printf("Invalid input. Enter a whole number.\n");
 		} else {
